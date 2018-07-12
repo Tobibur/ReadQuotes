@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ReadQuotes</string>
+    <string name="loading_quote">Loading Quote..</string>
+</resources>
