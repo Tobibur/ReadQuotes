@@ -20,6 +20,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         getQuotes()
+        swipe_refresh_layout.setOnRefreshListener {
+            getQuotes()
+        }
     }
 
     private fun getQuotes() {
@@ -37,6 +40,7 @@ class MainActivity : AppCompatActivity() {
             @SuppressLint("SetTextI18n")
             override fun onSuccess(statusCode: Int, headers: Array<Header>, response: JSONObject) {
                 super.onSuccess(statusCode, headers, response)
+                swipe_refresh_layout.isRefreshing = false
                 val JsonResponse = response.toString()
                 val quoteText = response.getString("quoteText")
                 val author = response.getString("quoteAuthor")
@@ -46,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onFailure(statusCode: Int, headers: Array<Header>, throwable: Throwable, errorResponse: JSONObject) {
                 super.onFailure(statusCode, headers, throwable, errorResponse)
-                //loopjListener.taskCompleted(errorResponse.toString())
+                swipe_refresh_layout.isRefreshing = false
                 Log.e("MainActivity", "onFailure: $errorResponse")
             }
         });
