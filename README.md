@@ -1,6 +1,9 @@
 # ReadQuotes
 Android Kotlin app to read great qoutes
 
+## App Screenshot
+<img src="read_quotes_demo.png" width="300">
+
 ## Libraries used
 1. [Android-Asyn-Http](https://github.com/loopj/android-async-http)
    `implementation 'com.loopj.android:android-async-http:1.4.9'`
