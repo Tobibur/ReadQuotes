@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.LiveData
+import android.telecom.Connection
 import android.util.Log
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.JsonHttpResponseHandler
@@ -44,7 +45,8 @@ class QuotesViewModel : ViewModel(){
 
             override fun onFailure(statusCode: Int, headers: Array<Header>, throwable: Throwable, errorResponse: JSONObject) {
                 super.onFailure(statusCode, headers, throwable, errorResponse)
-                Log.e("MainActivity", "onFailure: $errorResponse")
+                Log.i("MainActivity", "onFailure: $errorResponse")
+                quote!!.value = "Failed!"
             }
         })
     }
