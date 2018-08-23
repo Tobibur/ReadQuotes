@@ -2,58 +2,24 @@ package com.tobibur.readquotes
 
 import android.annotation.SuppressLint
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.util.Log
-import com.loopj.android.http.AsyncHttpClient
-import com.loopj.android.http.JsonHttpResponseHandler
-import com.loopj.android.http.RequestParams
-import cz.msebera.android.httpclient.Header
-import org.json.JSONObject
 
 class QuotesViewModel : ViewModel(){
-    private val quoteURL = "http://api.forismatic.com/api/1.0/"
 
-    private var quote: MutableLiveData<String>? = null
+    private var quote : LiveData<ApiResponse>? = null
+    private val mApiRepo: ApiRepo = ApiRepo()
 
-    fun getQuotes(b: Boolean): LiveData<String> {
-        if(!b){
-            quote = null
+    fun getQuoteData(refresh: Boolean): LiveData<ApiResponse> {
+        if (refresh) {
+            quote = mApiRepo.getPosts()
+            return quote as LiveData<ApiResponse>
         }
-        if (quote == null) {
-            quote = MutableLiveData()
-            loadQuote()
+        if (this.quote == null) {
+            quote = mApiRepo.getPosts()
+            return quote as LiveData<ApiResponse>
         }
-        return quote as MutableLiveData<String>
-    }
-
-    private fun loadQuote() {
-        val client = AsyncHttpClient()
-
-        client.get(quoteURL, getParams(), object : JsonHttpResponseHandler(){
-            @SuppressLint("SetTextI18n")
-            override fun onSuccess(statusCode: Int, headers: Array<Header>, response: JSONObject) {
-                super.onSuccess(statusCode, headers, response)
-                val jsonResponse = response.toString()
-                val quoteText = response.getString("quoteText")
-                val author = response.getString("quoteAuthor")
-                val result = "$quoteText \n\n-$author"
-                quote!!.value = result
-                Log.i("MainActivity", "onSuccess: $jsonResponse")
-            }
-
-            override fun onFailure(statusCode: Int, headers: Array<Header>, throwable: Throwable, errorResponse: JSONObject) {
-                super.onFailure(statusCode, headers, throwable, errorResponse)
-                Log.e("MainActivity", "onFailure: $errorResponse")
-            }
-        })
-    }
-
-    private fun getParams(): RequestParams {
-        val params = RequestParams()
-        params.put("method","getQuote")
-        params.put("format","json")
-        params.put("lang","en")
-        return params
+        return quote as LiveData<ApiResponse>
     }
 }

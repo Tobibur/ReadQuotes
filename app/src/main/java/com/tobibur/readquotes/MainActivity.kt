@@ -11,28 +11,33 @@ import android.widget.TextView
 
 class MainActivity : AppCompatActivity() ,ConnectivityReceiver.ConnectivityReceiverListener{
 
+    private val isConnected = ConnectivityReceiver.isConnected()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         checkConnection()
         swipe_refresh_layout.setOnRefreshListener {
-            checkConnection()
+            if(isConnected){
+                readQuotes(true)
+            }else{
+                showSnack(isConnected)
+            }
         }
     }
 
     private fun readQuotes(b: Boolean) {
 
         val model = ViewModelProviders.of(this).get(QuotesViewModel::class.java)
-        model.getQuotes(b).observe(this, Observer<String> {
-            quoteTextView.text = it
+        model.getQuoteData(b).observe(this, Observer<ApiResponse> {
+            quoteTextView.text = it!!.posts
             swipe_refresh_layout.isRefreshing = false
         })
     }
 
     // Method to manually check connection status
     private fun checkConnection() {
-        val isConnected = ConnectivityReceiver.isConnected()
         showSnack(isConnected)
     }
 
