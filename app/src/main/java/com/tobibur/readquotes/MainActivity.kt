@@ -7,26 +7,71 @@ import kotlinx.android.synthetic.main.activity_main.*
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Color
 import android.support.design.widget.Snackbar
+import android.util.Log
 import android.widget.TextView
+import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 
-class MainActivity : AppCompatActivity() ,ConnectivityReceiver.ConnectivityReceiverListener{
+class MainActivity : AppCompatActivity(){
 
-    private val isConnected = ConnectivityReceiver.isConnected()
+    private var connectivityDisposable: Disposable? = null
+    private var internetDisposable: Disposable? = null
+
+    companion object {
+        private val TAG = "ReactiveNetwork"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        checkConnection()
-        swipe_refresh_layout.setOnRefreshListener {
-            if(isConnected){
-                readQuotes(true)
-            }else{
-                showSnack(isConnected)
-            }
-        }
+
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        connectivityDisposable = ReactiveNetwork.observeNetworkConnectivity(applicationContext)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { connectivity ->
+                    Log.d(TAG, connectivity.toString())
+                    val state = connectivity.state()
+                    val name = connectivity.typeName()
+                    val string = String.format("state: %s, typeName: %s", state, name)
+                    //Toast.makeText(this, string,Toast.LENGTH_SHORT).show()
+                }
+
+        internetDisposable = ReactiveNetwork.observeInternetConnectivity()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { isConnectedToInternet ->
+                    //internet_status.text = isConnectedToInternet.toString()
+                    showSnack(isConnectedToInternet)
+                    //checkInternet = isConnectedToInternet
+                    swipe_refresh_layout.setOnRefreshListener {
+                        if(isConnectedToInternet){
+                            readQuotes(true)
+                        }else{
+                            showSnack(isConnectedToInternet)
+                        }
+                    }
+                }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        safelyDispose(connectivityDisposable)
+        safelyDispose(internetDisposable)
+    }
+
+    private fun safelyDispose(disposable: Disposable?) {
+        if (disposable != null && !disposable.isDisposed) {
+            disposable.dispose()
+        }
+    }
     private fun readQuotes(b: Boolean) {
 
         val model = ViewModelProviders.of(this).get(QuotesViewModel::class.java)
@@ -34,11 +79,6 @@ class MainActivity : AppCompatActivity() ,ConnectivityReceiver.ConnectivityRecei
             quoteTextView.text = it!!.posts
             swipe_refresh_layout.isRefreshing = false
         })
-    }
-
-    // Method to manually check connection status
-    private fun checkConnection() {
-        showSnack(isConnected)
     }
 
     // Showing the status in Snackbar
@@ -59,13 +99,6 @@ class MainActivity : AppCompatActivity() ,ConnectivityReceiver.ConnectivityRecei
             val textView = sbView.findViewById(android.support.design.R.id.snackbar_text) as TextView
             textView.setTextColor(color)
             snackbar.show()
-        }
-    }
-
-
-    override fun onNetworkConnectionChanged(isConnected: Boolean) {
-        if(!isConnected){
-            showSnack(isConnected)
         }
     }
 

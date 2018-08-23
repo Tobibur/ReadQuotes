@@ -12,11 +12,8 @@ class QuotesViewModel : ViewModel(){
     private val mApiRepo: ApiRepo = ApiRepo()
 
     fun getQuoteData(refresh: Boolean): LiveData<ApiResponse> {
-        if (refresh) {
-            quote = mApiRepo.getPosts()
-            return quote as LiveData<ApiResponse>
-        }
-        if (this.quote == null) {
+
+        if (this.quote == null|| refresh) {
             quote = mApiRepo.getPosts()
             return quote as LiveData<ApiResponse>
         }

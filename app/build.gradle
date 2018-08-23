@@ -36,4 +36,5 @@ dependencies {
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
     implementation 'com.android.support:design:28.0.0-alpha3'
+    implementation 'com.github.pwittchen:reactivenetwork-rx2:2.1.0'
 }
