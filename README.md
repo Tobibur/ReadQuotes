@@ -9,6 +9,8 @@ Android Kotlin app to read great qoutes
    `implementation 'com.loopj.android:android-async-http:1.4.9'`
 2. [ViewModel and LiveData](https://developer.android.com/topic/libraries/architecture/adding-components)
     `implementation "android.arch.lifecycle:extensions:$lifecycle_version"`
+3. [Reactive Network](https://github.com/pwittchen/ReactiveNetwork)
+   `implementation 'com.github.pwittchen:reactivenetwork-rx2:2.1.0'`
 ## API Used
 [Forismatic](http://forismatic.com/en/api/)
 
