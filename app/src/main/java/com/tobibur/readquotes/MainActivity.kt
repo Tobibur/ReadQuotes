@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity(){
     private var internetDisposable: Disposable? = null
 
     companion object {
-        private val TAG = "ReactiveNetwork"
+        private const val TAG = "ReactiveNetwork"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,9 +38,9 @@ class MainActivity : AppCompatActivity(){
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { connectivity ->
                     Log.d(TAG, connectivity.toString())
-                    val state = connectivity.state()
-                    val name = connectivity.typeName()
-                    val string = String.format("state: %s, typeName: %s", state, name)
+                    //val state = connectivity.state()
+                    //val name = connectivity.typeName()
+                    //val string = String.format("state: %s, typeName: %s", state, name)
                     //Toast.makeText(this, string,Toast.LENGTH_SHORT).show()
                 }
 

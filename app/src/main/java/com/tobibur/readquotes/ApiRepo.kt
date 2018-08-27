@@ -12,7 +12,7 @@ import org.json.JSONObject
 
 class ApiRepo {
 
-    val client = AsyncHttpClient()
+    private val client = AsyncHttpClient()
     private val quoteURL = "http://api.forismatic.com/api/1.0/"
 
     fun getPosts(): LiveData<ApiResponse> {
