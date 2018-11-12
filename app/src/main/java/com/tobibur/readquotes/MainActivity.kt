@@ -1,12 +1,12 @@
 package com.tobibur.readquotes
 
-import android.arch.lifecycle.Observer
-import android.support.v7.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.*
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.graphics.Color
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.util.Log
 import android.widget.TextView
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity(){
                     .make(quoteTextView,message, Snackbar.LENGTH_LONG)
 
             val sbView = snackbar.view
-            val textView = sbView.findViewById(android.support.design.R.id.snackbar_text) as TextView
+            val textView = sbView.findViewById(com.google.android.material.R.id.snackbar_text) as TextView
             textView.setTextColor(color)
             snackbar.show()
         }
